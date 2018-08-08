@@ -1,0 +1,53 @@
+{
+    "name": "botman/driver-google-assistant",
+    "license": "MIT",
+    "description": "Google Assistant driver for BotMan",
+    "keywords": [
+        "Bot",
+        "BotMan",
+        "Google Assistant"
+    ],
+    "homepage": "http://github.com/botman/driver-google-assistant",
+    "authors": [
+        {
+            "name": "Marcel Pociot",
+            "email": "m.pociot@gmail.com"
+        },
+        {
+            "name": "Barry vd. Heuvel",
+            "email": "barryvdh@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "botman/botman": "~2.0"
+    },
+    "require-dev": {
+        "botman/studio-addons": "~1.0",
+        "illuminate/contracts": "~5.5.0",
+        "phpunit/phpunit": "~5.0",
+        "mockery/mockery": "dev-master",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "BotMan\\Drivers\\GoogleAssistant\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "cs": "php-cs-fixer fix"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BotMan\\Drivers\\GoogleAssistant\\Providers\\GoogleAssistantServiceProvider"
+            ]
+        }
+    }
+}
