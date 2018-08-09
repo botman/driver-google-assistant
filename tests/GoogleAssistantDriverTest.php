@@ -294,6 +294,8 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
         $driver = $this->getValidDriver();
 
         $incomingMessage = new IncomingMessage('text', '123456', '987654');
+        $incomingMessage->addExtras('queryText', 'text');
+        
         $answer = $driver->getConversationAnswer($incomingMessage);
 
         $this->assertSame('text', $answer->getText());
