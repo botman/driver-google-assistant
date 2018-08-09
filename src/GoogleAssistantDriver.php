@@ -3,6 +3,7 @@
 namespace BotMan\Drivers\GoogleAssistant;
 
 use BotMan\BotMan\Drivers\Events\GenericEvent;
+use BotMan\BotMan\Interfaces\DriverInterface;
 use BotMan\BotMan\Users\User;
 use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
@@ -165,6 +166,6 @@ class GoogleAssistantDriver extends HttpDriver
      */
     public function sendRequest($endpoint, array $parameters, IncomingMessage $matchingMessage)
     {
-        //
+        throw new \RuntimeException('sendRequest is not supported by this driver');
     }
 }

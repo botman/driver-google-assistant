@@ -298,4 +298,18 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
 
         $this->assertSame('text', $answer->getText());
     }
+
+    /**
+     * @expectedException \RuntimeException
+     * @test
+     */
+    public function it_cannot_send_requests()
+    {
+        $driver = $this->getValidDriver();
+
+        $message = new IncomingMessage('text', '123456', '987654');
+
+        /** @var Response $response */
+        $response = $driver->sendRequest('/foo', [], $message);
+    }
 }
