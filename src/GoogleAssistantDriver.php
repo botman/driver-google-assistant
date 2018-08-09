@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use BotMan\BotMan\Drivers\HttpDriver;
 use BotMan\BotMan\Messages\Incoming\Answer;
 use BotMan\BotMan\Messages\Outgoing\Question;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use BotMan\BotMan\Interfaces\DriverEventInterface;
@@ -143,7 +144,7 @@ class GoogleAssistantDriver extends HttpDriver
             $response->respondText($payload['text']);
         }
 
-        return Response::create(json_encode($response->render()))->send();
+        return JsonResponse::create($response->render())->send();
     }
 
     /**
