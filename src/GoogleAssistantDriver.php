@@ -68,11 +68,17 @@ class GoogleAssistantDriver extends HttpDriver
     public function getMessages()
     {
         if (empty($this->messages)) {
-            $message = $this->event->get('queryText');
+            $intent = $this->event->get('intent')['displayName'];
             $session = $this->payload->get('session');
             $user = $this->payload->get('originalDetectIntentRequest')['payload']['user'] ?? null;
 
-            $message = new IncomingMessage($message, $user ? $user['userId'] : $session, $session, $this->payload);
+            $message = new IncomingMessage($intent, $user ? $user['userId'] : $session, $session, $this->payload);
+
+            $message->addExtras('queryText', $this->event->get('queryText'));
+            $message->addExtras('intent', $intent);
+            $message->addExtras('action', $this->event->get('action'));
+            $message->addExtras('parameters', $this->event->get('parameters'));
+            $message->addExtras('languageCode', $this->event->get('languageCode'));
 
             $this->messages = [$message];
         }
@@ -85,11 +91,6 @@ class GoogleAssistantDriver extends HttpDriver
      */
     public function hasMatchingEvent()
     {
-        // When the queryText is self defined, fire no events
-        if ($this->event->get('action') === self::ACTION_INPUT_UNKNOWN) {
-            return false;
-        }
-
         $text = $this->event->get('queryText');
         if ($text === self::GOOGLE_ASSISTANT_WELCOME) {
             $event = new GenericEvent($this->event);

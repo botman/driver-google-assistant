@@ -27,7 +27,7 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
         return new GoogleAssistantDriver($request, [], $htmlInterface);
     }
 
-    private function getValidDriver($htmlInterface = null, $queryText = '${QUERYTEXT}')
+    private function getValidDriver($htmlInterface = null, $intent = '${INTENTNAME}', $queryText = '${QUERYTEXT}')
     {
         $responseData = '{
   "responseId": "c4b863dd-aafe-41ad-a115-91736b665cb9",
@@ -59,8 +59,8 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
       }
     ],
     "intent": {
-      "name": "${INTENTNAME}",
-      "displayName": "Default Welcome Intent"
+      "name": "${INTENTID}",
+      "displayName": "'.$intent.'"
     },
     "intentDetectionConfidence": 1,
     "diagnosticInfo": {},
@@ -164,10 +164,10 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
     }
 
     /** @test */
-    public function it_returns_the_message_text()
+    public function it_returns_the_intent()
     {
         $driver = $this->getValidDriver();
-        $this->assertSame('${QUERYTEXT}', $driver->getMessages()[0]->getText());
+        $this->assertSame('${INTENTNAME}', $driver->getMessages()[0]->getText());
     }
 
     /** @test */
@@ -199,10 +199,25 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
         $message = $driver->getMessages()[0];
         $user = $driver->getUser($message);
 
-        $this->assertSame($user->getId(), '${USERID}');
+        $this->assertSame('${USERID}', $user->getId());
         $this->assertNull($user->getFirstName());
         $this->assertNull($user->getLastName());
         $this->assertNull($user->getUsername());
+    }
+
+    /** @test */
+    public function it_has_extras()
+    {
+        $driver = $this->getValidDriver();
+
+        /** @var IncomingMessage $message */
+        $message = $driver->getMessages()[0];
+
+        $this->assertSame('${QUERYTEXT}', $message->getExtras('queryText'));
+        $this->assertSame('${INTENTNAME}', $message->getExtras('intent'));
+        $this->assertSame('input.welcome', $message->getExtras('action'));
+        $this->assertEquals([], $message->getExtras('parameters'));
+        $this->assertSame('en-us', $message->getExtras('languageCode'));
     }
 
     /** @test */
@@ -259,7 +274,7 @@ class GoogleAssistantDriverTest extends PHPUnit_Framework_TestCase
     /** @test */
     public function it_fires_welcome_event()
     {
-        $driver = $this->getValidDriver(null, GoogleAssistantDriver::GOOGLE_ASSISTANT_WELCOME);
+        $driver = $this->getValidDriver(null, 'Welcome', GoogleAssistantDriver::GOOGLE_ASSISTANT_WELCOME);
         $event = $driver->hasMatchingEvent();
         $this->assertInstanceOf(GenericEvent::class, $event);
         $this->assertSame(GoogleAssistantDriver::GOOGLE_ASSISTANT_WELCOME, $event->getName());
